@@ -14,6 +14,7 @@
 	import tw.cameo.DeviceUniqueID;
 	import GameResource.SendUserInfo;
 	import GameResource.LotteryFlow;
+	import GameResource.LotteryFlowType2;
 	
 	public class Lottery extends MovieClip {
 		
@@ -31,10 +32,13 @@
 		private var deviceUniqueId:DeviceUniqueID = null;
 		private var uploading:MovieClip = null;
 		
-		private var lotteryFlow:LotteryFlow = null;
+		private var strLotteryType:String = "Type1";
+		private var lotteryFlow:MovieClip = null;
 
-		public function Lottery() {
+		public function Lottery(strLotteryTypeIn:String = "Type1") {
 			// constructor code
+			strLotteryType = strLotteryTypeIn;
+			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 			deviceUniqueId = new DeviceUniqueID();
 		}
@@ -57,6 +61,7 @@
 		
 		private function destructor(e:Event = null) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
+			removeLotteryFlow();
 			removeEventChannelListener();
 			removeUploading();
 			deviceUniqueId = null;
@@ -76,6 +81,13 @@
 		}
 		
 		private function initInformationPannel() {
+			var date:Date = new Date();
+			var intMonth:int = date.getMonth + 1;
+			
+			CAMEO::NO_ANE {
+				intMonth = 5;
+			}
+			
 			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, "資料填寫"));
 			informationPannel = (isIphone5Layout) ? new InformationIphone5() : new InformationIphone4();
 			
@@ -83,6 +95,7 @@
 			var emailTextField:TextField = informationPannel.getChildByName("strEmail") as TextField;
 			var orderPost:MovieClip = informationPannel.getChildByName("OrderPost") as MovieClip;
 			var checkIcon:MovieClip = orderPost.getChildByName("CheckIcon") as MovieClip;
+		
 			checkIcon.visible = false;
 			orderPost.addEventListener(MouseEvent.CLICK, onOrderPostClick);
 			var agreement:MovieClip = informationPannel.getChildByName("Agreement") as MovieClip;
@@ -92,6 +105,13 @@
 				phoneNumberTextField.text = sharedObject.data["dicInfo"]["Phone"];
 				emailTextField.text = sharedObject.data["dicInfo"]["Email"];
 				checkIcon.visible = sharedObject.data["dicInfo"]["isReceiveEpaper"];
+			}
+			
+			if (intMonth == 5) {
+				informationPannel.GoLotteryButton.x = 345;
+				informationPannel.shareFbButton.addEventListener(MouseEvent.CLICK, onShareFbClick);
+			} else {
+				informationPannel.shareFbButton.visible = false;
 			}
 			
 			this.addChild(informationPannel);
@@ -105,9 +125,14 @@
 				agreement.removeEventListener(MouseEvent.CLICK, onAgreementClick);
 				var goLotteryButton:SimpleButton = informationPannel.getChildByName("GoLotteryButton") as SimpleButton;
 				goLotteryButton.removeEventListener(MouseEvent.CLICK, onGoLotteryButtonClick);
+				informationPannel.shareFbButton.removeEventListener(MouseEvent.CLICK, onShareFbClick);
 				this.removeChild(informationPannel);
 			}
 			informationPannel = null;
+		}
+		
+		private function onShareFbClick(e:MouseEvent) {
+			trace("onShareFbClick");
 		}
 		
 		private function onOrderPostClick(e:MouseEvent) {
@@ -206,8 +231,15 @@
 		
 		private function goLotteryFLow() {
 			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, "抽獎試手氣"));
-			lotteryFlow = new LotteryFlow();
+			
+			if (strLotteryType == "Type1") lotteryFlow = new LotteryFlow();
+			if (strLotteryType == "Type2") lotteryFlow = new LotteryFlowType2();
 			this.addChild(lotteryFlow);
+		}
+		
+		private function removeLotteryFlow() {
+			if (lotteryFlow) this.removeChild(lotteryFlow);
+			lotteryFlow = null;
 		}
 	}
 	
