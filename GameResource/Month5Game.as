@@ -83,7 +83,7 @@
 		private function initElement() {
 			gameHint = (isIphone5Layout) ? new Month5HintIphone5() : new Month5HintIphone4();
 			var intMonth:int = date.month + 1;
-			if (intMonth != 5) {
+			if (intMonth > 5) {
 				if (gameHint.hasOwnProperty("datePeriod")) {
 					gameHint.datePeriod.text = "活動已結束";
 					var textFormat:TextFormat = gameHint.datePeriod.getTextFormat();
@@ -126,7 +126,7 @@
 				if (sharedObject.data.hasOwnProperty("isMonth5GameWinned")) {
 					eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
 				} else {
-					lottery = new Lottery();
+					lottery = new Lottery("Type2");
 					this.addChild(lottery);
 				}
 			}

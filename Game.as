@@ -170,15 +170,6 @@
 		private function showNoGiftMessage() {
 			ToastMessage.showConfrim(this, String(intSelectMonth) + " 月贈獎活動已結束！", "玩遊戲", "取消");
 			eventChannel.addEventListener(ToastMessage.CLICK_OK, onClickOk);
-//			noGiftMessage = (isIphone5Layout) ? new NoGiftMessageIphone5() : new NoGiftMessageIphone4();
-//			noGiftMessage.addEventListener(MouseEvent.CLICK, onCancelButtonClick);
-//			var messageTextField:TextField = noGiftMessage.getChildByName("MessageTextField") as TextField;
-//			messageTextField.text = String(intSelectMonth) + " 月贈獎活動已結束！";
-//			var goPlayButton:SimpleButton = noGiftMessage.getChildByName("PlayButton") as SimpleButton;
-//			goPlayButton.addEventListener(MouseEvent.CLICK, onGoPlayButtonClick);
-//			var cancelButton:SimpleButton = noGiftMessage.getChildByName("CancelButton") as SimpleButton;
-//			cancelButton.addEventListener(MouseEvent.CLICK, onCancelButtonClick);
-//			this.addChild(noGiftMessage);
 		}
 		
 		private function onClickOk(e:Event) {
