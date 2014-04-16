@@ -110,7 +110,10 @@
 			trace("Month5Game.as / onGameFlowFinish.");
 			removeGameFlow();
 			var intMonth:int = date.month + 1;
-			intMonth = 5;
+			
+			CAMEO::Debug {
+				intMonth = 5;
+			}
 			
 			sharedObject = SharedObject.getLocal("GameRecord");
 			CAMEO::NO_ANE {
@@ -126,7 +129,7 @@
 				if (sharedObject.data.hasOwnProperty("isMonth5GameWinned")) {
 					eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
 				} else {
-					lottery = new Lottery("Type2");
+					lottery = new Lottery("Type2", true);
 					this.addChild(lottery);
 				}
 			}

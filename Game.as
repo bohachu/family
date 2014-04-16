@@ -18,6 +18,7 @@
 	import GameResource.Month3Game;
 	import GameResource.Month4Game;
 	import GameResource.Month5Game;
+	import GameResource.Month6Game;
 	
 	import tw.cameo.ToastMessage;
 
@@ -96,8 +97,8 @@
 		}
 		
 		private function initGameIcon() {
-			CAMEO::NO_ANE {
-				intNowMonth = 5;
+			CAMEO::Debug {
+				intNowMonth = 6;
 			}
 			
 			for (var i=0; i<11; i++) {
@@ -235,6 +236,7 @@
 			var month3Game:Month3Game = null;
 			var month4Game:Month4Game = null;
 			var month5Game:Month5Game = null;
+			var month6Game:Month6Game = null;
 		}
 	}
 	

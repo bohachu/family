@@ -34,10 +34,13 @@
 		
 		private var strLotteryType:String = "Type1";
 		private var lotteryFlow:MovieClip = null;
+		
+		private var isShowShareButton:Boolean = false;
 
-		public function Lottery(strLotteryTypeIn:String = "Type1") {
+		public function Lottery(strLotteryTypeIn:String = "Type1", isShowShareButtonIn:Boolean = false) {
 			// constructor code
 			strLotteryType = strLotteryTypeIn;
+			isShowShareButton = isShowShareButtonIn;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 			deviceUniqueId = new DeviceUniqueID();
@@ -82,11 +85,6 @@
 		
 		private function initInformationPannel() {
 			var date:Date = new Date();
-			var intMonth:int = date.getMonth + 1;
-			
-			CAMEO::NO_ANE {
-				intMonth = 5;
-			}
 			
 			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, "資料填寫"));
 			informationPannel = (isIphone5Layout) ? new InformationIphone5() : new InformationIphone4();
@@ -107,7 +105,7 @@
 				checkIcon.visible = sharedObject.data["dicInfo"]["isReceiveEpaper"];
 			}
 			
-			if (intMonth == 5) {
+			if (isShowShareButton) {
 				informationPannel.GoLotteryButton.x = 345;
 				informationPannel.shareFbButton.addEventListener(MouseEvent.CLICK, onShareFbClick);
 			} else {
