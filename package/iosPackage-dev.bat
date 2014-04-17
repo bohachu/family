@@ -1,0 +1,2 @@
+copy /Y C:\github\flashV2\Family\Main.swf
+call "D:\Resource\AdobeAIRSDK 4.0 Beta\bin\adt" -package -target ipa-test -provisioning-profile FamilyAppProfile_Dev.mobileprovision -storetype pkcs12 -keystore Family_Dev.p12 -storepass cameo Family-v1.1.0221.ipa Main-app-ios-dev.xml -extdir "C:/github/flashV2/ane/lib/iOS/iOS_7.0" Main.swf Default.png Default@2x.png Default-568h@2x.png icons Resource
