@@ -17,6 +17,7 @@
 	import GameTitleInfo;
 	import flash.net.SharedObject;
 	import flash.text.TextFormat;
+	import flash.filesystem.File;
 	
 	public class Month5Game extends MovieClip {
 
@@ -31,6 +32,7 @@
 		private var isIphone5Layout:Boolean = false;
 		private var bg:Sprite = null;
 		
+		private const strJpgFileName:String = "May.jpg";
 		private var gameFlow:GameType2Flow = null;
 		private var gameHint:MovieClip = null;
 		private var lottery:Lottery = null;
@@ -94,7 +96,7 @@
 		}
 		
 		private function initFlow() {
-			gameFlow = new GameType2Flow(this, gameHint, Month5, "May.jpg", "5 月份活動");
+			gameFlow = new GameType2Flow(this, gameHint, Month5, strJpgFileName, "5 月份活動");
 			gameFlow.addEventListener(GameMakerEvent.MAKE_GAMEMOVIE_FINISH, onGameFlowFinish);
 		}
 		
@@ -129,7 +131,9 @@
 				if (sharedObject.data.hasOwnProperty("isMonth5GameWinned")) {
 					eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
 				} else {
-					lottery = new Lottery("Type2", true);
+					var jpgFile:File = File.applicationStorageDirectory.resolvePath(strJpgFileName);
+					var strJpgSavePath:String = jpgFile.nativePath;
+					lottery = new Lottery("Type2", true, strJpgSavePath);
 					this.addChild(lottery);
 				}
 			}

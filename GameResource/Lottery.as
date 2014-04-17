@@ -16,6 +16,11 @@
 	import GameResource.LotteryFlow;
 	import GameResource.LotteryFlowType2;
 	
+	CAMEO::ANE {
+		import ane.lib.VideoNativeExtension;
+		import ane.lib.VideoNativeExtensionEvents;
+	}
+	
 	public class Lottery extends MovieClip {
 		
 		public static const FLOW_END_WIN:String = "Lottery.FLOW_END_WIN";
@@ -36,11 +41,17 @@
 		private var lotteryFlow:MovieClip = null;
 		
 		private var isShowShareButton:Boolean = false;
+		private var strImagePath:String = "";
+		
+		CAMEO::ANE {
+			private var ext:VideoNativeExtension = null;
+		}
 
-		public function Lottery(strLotteryTypeIn:String = "Type1", isShowShareButtonIn:Boolean = false) {
+		public function Lottery(strLotteryTypeIn:String = "Type1", isShowShareButtonIn:Boolean = false, strImagePathIn:String = "") {
 			// constructor code
 			strLotteryType = strLotteryTypeIn;
 			isShowShareButton = isShowShareButtonIn;
+			strImagePath = strImagePathIn;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 			deviceUniqueId = new DeviceUniqueID();
@@ -72,6 +83,11 @@
 			removeInformationPannel();
 			sharedObject = null;
 			eventChannel = null;
+			
+			CAMEO::ANE {
+				if (ext) ext.dispose();
+				ext = null;
+			}
 		}
 		
 		private function removeEventChannelListener() {
@@ -130,7 +146,10 @@
 		}
 		
 		private function onShareFbClick(e:MouseEvent) {
-			trace("onShareFbClick");
+			CAMEO::ANE {
+				ext = new VideoNativeExtension();
+				ext.shareImage(strImagePath, "");
+			}
 		}
 		
 		private function onOrderPostClick(e:MouseEvent) {
