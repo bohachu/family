@@ -148,7 +148,7 @@
 		private function onShareFbClick(e:MouseEvent) {
 			CAMEO::ANE {
 				ext = new VideoNativeExtension();
-				ext.shareImage(strImagePath, "");
+				ext.shareImage(strImagePath, "", this.stage);
 			}
 		}
 		

@@ -126,7 +126,7 @@
 		
 		private function onAllAnswerCorrect(e:Event) {
 			eventChannel.addEventListener(ToastMessage.CLOSE_MESSAGE, onCloseMessage);
-			ToastMessage.showToastMessage(this, "恭喜全部答對，來去抽獎！");
+			ToastMessage.showToastMessage(this, "恭喜全部答對！");
 		}
 		
 		private function onWrongAnswer(e:Event) {
