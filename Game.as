@@ -69,7 +69,7 @@
 				if (!gameSharedObject.data.hasOwnProperty("alreadyShowActivityGiftHint")) {
 					gameSharedObject.data["alreadyShowActivityGiftHint"] = true;
 					gameSharedObject.flush();
-					ToastMessage.showToastMessage(this, "所有活動贈品皆由教育部提供，與蘋果官方無任何關係。");
+					ToastMessage.showToastMessage(this, "所有活動贈品皆由各縣市家庭教育中心提供，與蘋果官方無任何關係。");
 				}
 			}
 		}
