@@ -48,7 +48,7 @@
     </manifestAdditions>
   </android>
   <extensions>
-    <extensionID>com.cameo.flash2videoext</extensionID>
+    <extensionID>tw.cameo.lib.CameoNativeExtension</extensionID>
     <extensionID>tw.cameo.lib.WebViewNativeExtension</extensionID>
   </extensions>
 </application>
