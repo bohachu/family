@@ -47,8 +47,4 @@
 </manifest>]]>
     </manifestAdditions>
   </android>
-  <extensions>
-    <extensionID>tw.cameo.lib.CameoNativeExtension</extensionID>
-    <extensionID>tw.cameo.lib.WebViewNativeExtension</extensionID>
-  </extensions>
 </application>
