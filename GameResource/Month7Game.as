@@ -49,7 +49,7 @@
 			sharedObject = SharedObject.getLocal("GameRecord");
 			
 			eventChannel = EventChannel.getInstance();
-			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, GameTitleInfo.lstStrTitle[5]));
+			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, GameTitleInfo.lstStrTitle[6]));
 		
 			LayoutManager.setLayout(this);
 			isIphone5Layout = LayoutManager.useIphone5Layout();
