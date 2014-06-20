@@ -32,13 +32,13 @@
 		
 		private var intCloseRange:int = 15;
 		private var dicPuzzleLocation:Object = {
-			"1": new Point(53, (isUseIphone5Layout) ? 69 : 69),
-			"2": new Point(397, (isUseIphone5Layout) ? 69 : 69),
-			"3": new Point(171, (isUseIphone5Layout) ? 69 : 69),
-			"4": new Point(170, (isUseIphone5Layout) ? 290 : 290),
-			"5": new Point(54, (isUseIphone5Layout) ? 292 : 292),
-			"6": new Point(54, (isUseIphone5Layout) ? 291 : 291),
-			"7": new Point(54, (isUseIphone5Layout) ? 424 : 424)
+			"1": new Point(53, (isUseIphone5Layout) ? 171 : 69),
+			"2": new Point(397, (isUseIphone5Layout) ? 171 : 69),
+			"3": new Point(171, (isUseIphone5Layout) ? 171 : 69),
+			"4": new Point(170, (isUseIphone5Layout) ? 392 : 290),
+			"5": new Point(54, (isUseIphone5Layout) ? 394 : 292),
+			"6": new Point(54, (isUseIphone5Layout) ? 393 : 291),
+			"7": new Point(54, (isUseIphone5Layout) ? 526 : 424)
 		};
 		
 		private var puzzleHintButton:SimpleButton = null;
