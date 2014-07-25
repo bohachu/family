@@ -21,6 +21,7 @@
 	import GameResource.Month6Game;
 	import GameResource.Month7Game;
 	import GameResource.Month8Game;
+	import GameResource.Month9Game;
 	import GameResource.Month10Game;
 	
 	import tw.cameo.ToastMessage;
@@ -242,6 +243,7 @@
 			var month6Game:Month6Game = null;
 			var month7Game:Month7Game = null;
 			var month8Game:Month8Game = null;
+			var month9Game:Month9Game = null;
 			var month10Game:Month10Game = null;
 		}
 	}
