@@ -117,7 +117,7 @@
 		}
 		
 		private function onPuzzleFinish(e:Event) {
-			ToastMessage.showToastMessage(this, "完成拼圖！");
+			ToastMessage.showToastMessage(this, "完成遊戲！");
 			eventChannel.addEventListener(ToastMessage.CLOSE_MESSAGE, onCloseMessage);
 		}
 		

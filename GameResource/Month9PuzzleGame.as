@@ -4,10 +4,13 @@
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.SimpleButton;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.Timer;
 	import flash.geom.Point;
+	import flash.media.Sound;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
-	import flash.media.Sound;
+	import flash.events.TimerEvent;
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
@@ -22,30 +25,18 @@
 		private const isUseIphone5Layout:Boolean = LayoutManager.useIphone5Layout();
 		private var intDefaultHeight:Number = (isUseIphone5Layout) ? LayoutSettings.intDefaultHeightForIphone5 : LayoutSettings.intDefaultHeight;
 		
-		private var puzzleOriginalPicture:Sprite = null;
-		private var lstPuzzles:Array = null;
-		private var lstPuzzleMover:Array = null;
-		private var lstBoolLocationDone:Array = [false, false, false, false, false, false, false];
+		private var lstPuzzleX:Array = [20, 223, 425];
+		private var lstPuzzleY:Array = (isUseIphone5Layout) ? [128, 340, 552, 762] : [28, 240, 452, 662];
+		private var lstPuzzleLocation:Array = new Array();
+		private var lstFace:Array = null;
 		
-		private var puzzleBg:Sprite = null;
-		private var puzzleBgPosition:Point = new Point(0, (isUseIphone5Layout) ? 118 : 16);
+		private var firstSelectFace:MovieClip = null;
+		private var secondSelectFace:MovieClip = null;
+		private var lstIsFaceMatch:Array = [false, false, false, false, false, false];
 		
-		private var intCloseRange:int = 15;
-		private var dicPuzzleLocation:Object = {
-			"1": new Point(53, (isUseIphone5Layout) ? 171 : 69),
-			"2": new Point(397, (isUseIphone5Layout) ? 171 : 69),
-			"3": new Point(171, (isUseIphone5Layout) ? 171 : 69),
-			"4": new Point(170, (isUseIphone5Layout) ? 392 : 290),
-			"5": new Point(54, (isUseIphone5Layout) ? 394 : 292),
-			"6": new Point(54, (isUseIphone5Layout) ? 393 : 291),
-			"7": new Point(54, (isUseIphone5Layout) ? 526 : 424)
-		};
-		
-		private var puzzleHintButton:SimpleButton = null;
-		private var puzzleHintButtonPosition:Point = new Point(0, (isUseIphone5Layout) ? 830 : 655);
-		private var puzzleHint:Sprite = null;
-		private var puzzleHintPosition:Point = new Point(230, (isUseIphone5Layout) ? 640 : 465);
-		private var puzzleSound:Sound = null;
+		private var faceFlipSound:Sound = null;
+		private var faceMatchSound:Sound = null;
+		private var faceDismatchSound:Sound = null;
 		
 		public function Month9PuzzleGame() {
 			// constructor code
@@ -55,229 +46,173 @@
 		private function init(e:Event) {
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
-			initPuzzleBg();
-			initPuzzleHintButton();
-			initPuzzleMover();
+			
+			initPuzzleLocation();
 			initPuzzle();
+			playPuzzle();
 		}
 		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
-			removePuzzleHintButton();
-			removePuzzle();
-			removePuzzleMover();
-			removePuzzleBg();
+			remvoeFaceEventListener();
+			remvoePuzzle();
+
+			lstPuzzleX = null;
+			lstPuzzleY = null;
+			lstPuzzleLocation = null;
+			lstIsFaceMatch = null;
 			
-			dicPuzzleLocation = null;
-			puzzleHintButtonPosition = null;
-			puzzleHintPosition = null;
+			faceFlipSound = null;
+			faceMatchSound = null;
+			faceDismatchSound = null;
 		}
 		
-		private function initPuzzleBg() {
-			puzzleBg = new PuzzleBackground();
-			puzzleBg.x = puzzleBgPosition.x;
-			puzzleBg.y = puzzleBgPosition.y;
-			this.addChild(puzzleBg);
-		}
-		
-		private function removePuzzleBg() {
-			if (puzzleBg) this.removeChild(puzzleBg);
-			puzzleBg = null;
-			puzzleBgPosition = null;
-		}
-		
-		private function initPuzzleMover() {
-			lstPuzzleMover = [
-				new PuzzleMover01(),
-				new PuzzleMover02(),
-				new PuzzleMover03(),
-				new PuzzleMover04(),
-				new PuzzleMover05(),
-				new PuzzleMover06(),
-				new PuzzleMover07()
-			];
-			
-			for (var i:int = 0; i<lstPuzzleMover.length; i++) {
-				lstPuzzleMover[i].name = String(i+1);
-				lstPuzzleMover[i].x = getRandomLocation("x", lstPuzzleMover[i].width/2);
-				lstPuzzleMover[i].y = getRandomLocation("y", lstPuzzleMover[i].height/2);
-				lstPuzzleMover[i].addEventListener(MouseEvent.MOUSE_DOWN, handlePuzzleMouseDown);
-				lstPuzzleMover[i].addEventListener(MouseEvent.MOUSE_UP, handlePuzzleMouseUp);
-				lstPuzzleMover[i].alpha = 0;
-				this.addChild(lstPuzzleMover[i]);
+		private function initPuzzleLocation() {
+			for (var i:int = 0; i<12; i++) {
+				var lstNewLocation:Array = new Array();
+				lstPuzzleLocation.push(getNewLocation());
 			}
 		}
 		
-		private function removePuzzleMover() {
-			for (var i:int = 0; i<lstPuzzleMover.length; i++) {
-				lstPuzzleMover[i].removeEventListener(MouseEvent.MOUSE_DOWN, handlePuzzleMouseDown);
-				lstPuzzleMover[i].removeEventListener(MouseEvent.MOUSE_UP, handlePuzzleMouseUp);
-				lstPuzzleMover[i].removeEventListener(MouseEvent.MOUSE_MOVE, handlePuzzleMouseMove);
-				this.removeChild(lstPuzzleMover[i]);
-				lstPuzzleMover[i] = null;
-			}
-			lstPuzzleMover.length = 0;
-			lstPuzzleMover = null;
-		}
-		
-		private function handlePuzzleMouseDown(e:MouseEvent) {
-			var puzzleMover:MovieClip = e.target as MovieClip;
-			var intIndex:int = int(puzzleMover.name) - 1;
-			disableAllMouseExcept(intIndex);
+		private function getNewLocation():int {
+			var isNewLocation:Boolean = true;
+			var intNewLocation:int = 0;
 			
-			puzzleMover.startDrag();
-			puzzleMover.addEventListener(MouseEvent.MOUSE_MOVE, handlePuzzleMouseMove);
-		}
-		
-		private function disableAllMouseExcept(intIndex:int) {
-			for (var i:int = 0; i<lstPuzzleMover.length; i++) {
-				if (i != intIndex) lstPuzzleMover[i].mouseEnabled = false;
-			}
-		}
-		
-		private function enableAllMouse() {
-			for (var i:int = 0; i<lstPuzzleMover.length; i++) {
-				lstPuzzleMover[i].mouseEnabled = true;
-			}
-		}
-		
-		private function handlePuzzleMouseUp(e:MouseEvent) {
-			var puzzleMover:MovieClip = e.target as MovieClip;
-			puzzleMover.stopDrag();
-			puzzleMover.removeEventListener(MouseEvent.MOUSE_MOVE, handlePuzzleMouseMove);
-			enableAllMouse();
+			do {
+				intNewLocation = Math.floor(Math.random()*12);
+				isNewLocation = true;
+				for (var i:int = 0; i<lstPuzzleLocation.length; i++) {
+					if (lstPuzzleLocation[i] == intNewLocation) {
+							isNewLocation = false;
+					}
+				}
+			} while (!isNewLocation);
 			
-			if (checkIsCloseLocation(puzzleMover)) {
-				var intIndex:int = int(puzzleMover.name)-1;
-				puzzleMover.x = lstPuzzles[intIndex].x = dicPuzzleLocation[puzzleMover.name].x;
-				puzzleMover.y = lstPuzzles[intIndex].y = dicPuzzleLocation[puzzleMover.name].y;
-				puzzleMover.removeEventListener(MouseEvent.MOUSE_DOWN, handlePuzzleMouseDown);
-				puzzleMover.removeEventListener(MouseEvent.MOUSE_UP, handlePuzzleMouseUp);
-				
-				lstBoolLocationDone[intIndex] = true;
-				puzzleSound.play();
-			}
-			
-			if (checkAllPuzzleIsDone()) puzzleFinish();
-		}
-		
-		private function handlePuzzleMouseMove(e:MouseEvent) {
-			var puzzleMover:MovieClip = e.target as MovieClip;
-			var intIndex:int = int(puzzleMover.name)-1;
-			lstPuzzles[intIndex].x = puzzleMover.x;
-			lstPuzzles[intIndex].y = puzzleMover.y;
-		}
-		
-		private function checkIsCloseLocation(puzzleMover:MovieClip):Boolean {
-			var isClose:Boolean = false;
-			var intDx:Number = Math.abs(puzzleMover.x - dicPuzzleLocation[puzzleMover.name].x);
-			var intDy:Number = Math.abs(puzzleMover.y - dicPuzzleLocation[puzzleMover.name].y);
-			
-			if (intDx < intCloseRange && intDy < intCloseRange) {
-				isClose = true;
-			}
-			
-			return isClose;
-		}
-		
-		private function checkAllPuzzleIsDone():Boolean {
-			var isAllTrue:Boolean = true;
-			for (var i:int = 0; i<lstBoolLocationDone.length; i++) {
-				if (lstBoolLocationDone[i] != true) isAllTrue = false;
-			}
-			return isAllTrue;
+			return intNewLocation;
 		}
 		
 		private function initPuzzle() {
-			lstPuzzles = [
-				new Mouse08PuzzleSprite01(),
-				new Mouse08PuzzleSprite02(),
-				new Mouse08PuzzleSprite03(),
-				new Mouse08PuzzleSprite04(),
-				new Mouse08PuzzleSprite05(),
-				new Mouse08PuzzleSprite06(),
-				new Mouse08PuzzleSprite07()
-			];
-			
-			for (var i:int = 0; i<lstPuzzles.length; i++) {
-				lstPuzzles[i].x = lstPuzzleMover[i].x;
-				lstPuzzles[i].y = lstPuzzleMover[i].y;
-				this.addChild(lstPuzzles[i]);
+			lstFace = new Array();
+			for (var i:int = 0; i<6; i++) {
+				var faceClass:Class = getDefinitionByName("Face" + String(i+1)) as Class;
+				var face1:MovieClip = new faceClass() as MovieClip;
+				face1.name = String(i+1) + String("_1");
+				face1.x = lstPuzzleX[lstPuzzleLocation[i] % 3];
+				face1.y = lstPuzzleY[lstPuzzleLocation[i] % 4];
+				face1.addEventListener(MouseEvent.CLICK, onFaceClick);
+				var face2:MovieClip = new faceClass() as MovieClip;
+				face2.name = String(i+1) + String("_2");
+				face2.x = lstPuzzleX[lstPuzzleLocation[i+6] % 3];
+				face2.y = lstPuzzleY[lstPuzzleLocation[i+6] % 4];
+				face2.addEventListener(MouseEvent.CLICK, onFaceClick);
+				
+				lstFace[i] = face1;
+				lstFace[i+6] = face2;
+				
+				this.addChild(face1);
+				this.addChild(face2);
 			}
 			
-			puzzleSound = new PuzzleMoveSound();
+			faceFlipSound = new PuzzleMoveSound();
+			faceMatchSound = new LotteryWin();
+			faceDismatchSound = new LotteryFail();
 		}
 		
-		private function removePuzzle() {
-			for (var i:int = 0; i<lstPuzzles.length; i++) {
-				this.removeChild(lstPuzzles[i]);
-				lstPuzzles[i] = null;
+		private function remvoePuzzle() {
+			for (var i:int = 0; i<lstFace.length; i++) {
+				this.removeChild(lstFace[i]);
+				lstFace[i] = null;
+				lstFace.length = 0;
 			}
-			lstPuzzles.length = 0;
-			lstPuzzles = null;
-			puzzleSound = null;
+			lstFace = null;
 		}
 		
-		private function getRandomLocation(strTarget:String, intLength:Number):Number {
-			var intRange:Number = 0;
-			
-			if (strTarget == "x") {
-				intRange = 640-intLength;
+		private function playPuzzle() {
+			firstSelectFace = null;
+			secondSelectFace = null;
+			addFaceEventListener();
+		}
+		
+		private function addFaceEventListener() {
+			for (var i:int = 0; i<lstIsFaceMatch.length; i++) {
+				if (!lstIsFaceMatch[i]) {
+					lstFace[i].addEventListener(MouseEvent.CLICK, onFaceClick);
+					lstFace[i+6].addEventListener(MouseEvent.CLICK, onFaceClick);
+				}
 			}
-			if (strTarget == "y") {
-				intRange = intDefaultHeight - intLength;
+		}
+		
+		private function remvoeFaceEventListener() {
+			for (var i:int = 0; i<lstFace.length; i++) {
+				lstFace[i].removeEventListener(MouseEvent.CLICK, onFaceClick);
+			}
+		}
+		
+		private function onFaceClick(e:MouseEvent) {
+			faceFlipSound.play();
+			
+			var faceMovieClip:MovieClip = e.target as MovieClip;
+			faceMovieClip.gotoAndStop(2);
+			
+			if (firstSelectFace == null) {
+				faceMovieClip.removeEventListener(MouseEvent.CLICK, onFaceClick);
+				firstSelectFace = faceMovieClip;
+				return;
 			}
 			
-			var intResult:Number = Math.random()*intRange;
+			secondSelectFace = faceMovieClip;
+			remvoeFaceEventListener();
 			
-			return intResult;
-		}
-		
-		private function initPuzzleHintButton() {
-			puzzleHintButton = new PuzzleHintButton();
-			puzzleHintButton.x = puzzleHintButtonPosition.x;
-			puzzleHintButton.y = puzzleHintButtonPosition.y;
-			puzzleHintButton.addEventListener(MouseEvent.MOUSE_DOWN, showHint);
-			
-			puzzleOriginalPicture = new Month8PuzzleOriginal();
-			
-			this.addChild(puzzleHintButton);
-		}
-		
-		private function removePuzzleHintButton() {
-			if (puzzleHintButton) {
-				puzzleHintButton.removeEventListener(MouseEvent.MOUSE_DOWN, showHint);
-				puzzleHintButton.removeEventListener(MouseEvent.MOUSE_UP, hideHint);
-				this.removeChild(puzzleHintButton);
+			if (firstSelectFace.name.charAt(0) == secondSelectFace.name.charAt(0)) {
+				faceMatchSound.play();
+				lstIsFaceMatch[int(firstSelectFace.name.charAt(0))-1] = true;
+				
+				if (checkIsAllFaceMath()) {
+					puzzleFinish();
+				} else {
+					playPuzzle();
+				}
+			} else {
+				faceDismatchSound.play();
+				var flipFaceBackTimer:Timer = new Timer(1000, 1);
+				flipFaceBackTimer.addEventListener(TimerEvent.TIMER, onFlipFaceBackTimer);
+				flipFaceBackTimer.start();
 			}
-			puzzleOriginalPicture = null;
-			puzzleHintButton = null;
 		}
 		
-		private function showHint(e:MouseEvent) {
-			puzzleHintButton.addEventListener(MouseEvent.MOUSE_UP, hideHint);
-			puzzleHint = new PuzzleHintBg();
-			puzzleHint.x = puzzleHintPosition.x;
-			puzzleHint.y = puzzleHintPosition.y;
+		private function onFlipFaceBackTimer(e:TimerEvent) {
+			var flipFaceBackTimer:Timer = e.target as Timer;
+			flipFaceBackTimer.stop();
+			flipFaceBackTimer.removeEventListener(TimerEvent.TIMER, onFlipFaceBackTimer);
+			flipFaceBackTimer = null;
 			
-			puzzleOriginalPicture.width = puzzleOriginalPicture.height = 240;
-			puzzleOriginalPicture.x = 65;
-			puzzleOriginalPicture.y = 30;
-			puzzleHint.addChild(puzzleOriginalPicture);
-			this.addChild(puzzleHint);
+			firstSelectFace.gotoAndStop(1);
+			secondSelectFace.gotoAndStop(1);
+			
+			playPuzzle();
 		}
 		
-		private function hideHint(e:MouseEvent) {
-			puzzleHintButton.removeEventListener(MouseEvent.MOUSE_UP, hideHint);
-			if (puzzleHint) {
-				puzzleHint.removeChild(puzzleOriginalPicture);
-				this.removeChild(puzzleHint);
+		private function checkIsAllFaceMath():Boolean {
+			var isAllFaceMatch:Boolean = true;
+			
+			for (var i:int=0; i<lstIsFaceMatch.length; i++) {
+				if (!lstIsFaceMatch[i]) isAllFaceMatch = false;
 			}
-			puzzleHint = null;
+			
+			return isAllFaceMatch;
 		}
 		
 		private function puzzleFinish() {
 			this.dispatchEvent(new Event(Month9PuzzleGame.PUZZLE_COMPLETE));
+		}
+		
+		private function dummyFunctionForDynamicCreate() {
+			var face1:Face1 = null;
+			var face2:Face2 = null;
+			var face3:Face3 = null;
+			var face4:Face4 = null;
+			var face5:Face5 = null;
+			var face6:Face6 = null;
 		}
 
 	}
