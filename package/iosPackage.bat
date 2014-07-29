@@ -1,2 +1,2 @@
 copy /Y ..\Main.swf
-call "D:\Resource\AdobeAIRSDK 4.0 Beta\bin\adt" -package -target ipa-test -provisioning-profile FamilyAppProfile.mobileprovision -storetype pkcs12 -keystore FamilyAppProfile.p12 -storepass cameo Family-v1.6.0620.ipa Main-app-ios.xml -extdir "C:/github/flashCommon/ane/iOS" Main.swf Default.png Default@2x.png Default-568h@2x.png icons Resource
+call "D:\Resource\AdobeAIRSDK 4.0 Beta\bin\adt" -package -target ipa-test -provisioning-profile FamilyAppProfile.mobileprovision -storetype pkcs12 -keystore FamilyAppProfile.p12 -storepass cameo Family-v1.7.0801.ipa Main-app-ios.xml -extdir "C:/github/flashCommon/ane/iOS" Main.swf Default.png Default@2x.png Default-568h@2x.png icons Resource
