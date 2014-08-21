@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <application xmlns="http://ns.adobe.com/air/application/4.0">
     <id>tw.cameo.Family</id>
-    <versionNumber>1.7</versionNumber>
+    <versionNumber>1.8</versionNumber>
     <filename>家庭教育活動</filename>
     <description/>
   <!-- To localize the description, use the following format for the description element.
