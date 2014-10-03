@@ -24,6 +24,8 @@
 		private var sharedObject:SharedObject = null;
 		
 		private var date:Date = new Date();
+		private var dateBeginVerify:Date = new Date(2014, 8, 1);
+		private var dateEndVerify:Date = new Date(2014, 9, 1);
 		
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
@@ -47,7 +49,7 @@
 			sharedObject = SharedObject.getLocal("GameRecord");
 			
 			eventChannel = EventChannel.getInstance();
-			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, GameTitleInfo.lstStrTitle[7]));
+			eventChannel.writeEvent(new TitleBarEvent(TitleBarEvent.SET_TITLE, -1, GameTitleInfo.lstStrTitle[8]));
 		
 			LayoutManager.setLayout(this);
 			isIphone5Layout = LayoutManager.useIphone5Layout();
@@ -128,24 +130,19 @@
 		
 		private function nextStep() {
 			trace("Month9Game.as / nextStep.");
-			var intMonth:int = date.month + 1;
+			sharedObject = SharedObject.getLocal("GameRecord");
 			
-			CAMEO::Debug {
-				intMonth = 9;
-			}
-			
-			if (intMonth != 9) {
+			if (date < dateBeginVerify || date >= dateEndVerify) {
 				eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
+				return;
 			}
 			
-			if (intMonth == 9) {
-				if (sharedObject.data.hasOwnProperty("isMonth9GameWinned")) {
-					eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
-				} else {
-					lottery = new Lottery("Type2");
-					removeGame();
-					this.addChild(lottery);
-				}
+			if (sharedObject.data.hasOwnProperty("isMonth9GameWinned")) {
+				eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
+			} else {
+				lottery = new Lottery("Type2");
+				removeGame();
+				this.addChild(lottery);
 			}
 		}
 		

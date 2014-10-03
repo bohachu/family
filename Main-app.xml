@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<application xmlns="http://ns.adobe.com/air/application/3.7">
+<application xmlns="http://ns.adobe.com/air/application/15.0">
   <id>Main</id>
   <versionNumber>0.9</versionNumber>
   <filename>家庭教育中心</filename>
@@ -47,4 +47,9 @@
 </manifest>]]>
     </manifestAdditions>
   </android>
+  <extensions>
+    <extensionID>tw.cameo.imagehandler</extensionID>
+    <extensionID>com.cameo.flash2videoext</extensionID>
+    <extensionID>tw.cameo.lib.WebViewNativeExtension</extensionID>
+  </extensions>
 </application>

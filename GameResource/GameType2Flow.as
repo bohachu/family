@@ -12,7 +12,7 @@
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
-	import tw.cameo.game.ChosePicturePannelWithCameraUI;
+	import tw.cameo.game.ChosePicturePannelWithNewCameraRollAndCameraUI;
 	import tw.cameo.MovieChangePhotoAndObjectPropertyModify;
 	import tw.cameo.ObjectControler;
 	import tw.cameo.events.MovieEvents;
@@ -30,7 +30,7 @@
 
 		private var _container:DisplayObjectContainer = null;
 		private var gameHint:MovieClip = null;
-		private var chosePicturePannel:ChosePicturePannelWithCameraUI = null;
+		private var chosePicturePannel:ChosePicturePannelWithNewCameraRollAndCameraUI = null;
 		private var pictureBitmap:Bitmap = null;
 		private var movieClass:Class = null;
 		private var strJpgFileName:String = "";
@@ -133,14 +133,14 @@
 		}
 		
 		private function chosePicture() {
-			chosePicturePannel = new ChosePicturePannelWithCameraUI("請從相簿挑選或拍攝照片。");
-			chosePicturePannel.addEventListener(ChosePicturePannelWithCameraUI.PICTURE_LOADED, onPictureLoaded);
+			chosePicturePannel = new ChosePicturePannelWithNewCameraRollAndCameraUI("請從相簿挑選或拍攝照片。");
+			chosePicturePannel.addEventListener(ChosePicturePannelWithNewCameraRollAndCameraUI.PICTURE_LOADED, onPictureLoaded);
 			_container.addChild(chosePicturePannel);
 		}
 		
 		private function removeChosePicturePannel() {
 			if (chosePicturePannel) {
-				chosePicturePannel.removeEventListener(ChosePicturePannelWithCameraUI.PICTURE_LOADED, onPictureLoaded);
+				chosePicturePannel.removeEventListener(ChosePicturePannelWithNewCameraRollAndCameraUI.PICTURE_LOADED, onPictureLoaded);
 				_container.removeChild(chosePicturePannel);
 			}
 			chosePicturePannel = null;

@@ -23,6 +23,7 @@
 	import GameResource.Month8Game;
 	import GameResource.Month9Game;
 	import GameResource.Month10Game;
+	import GameResource.Month11Game;
 	import GameResource.Month12Game;
 	
 	import tw.cameo.ToastMessage;
@@ -39,6 +40,8 @@
 		
 		private var gameSharedObject:SharedObject = null;
 		private var date:Date = new Date();
+		private var dateVerify:Date = new Date(2015, 0, 1);
+		private var strDate:String = String(date.fullYear) + String(date.month + 1);
 		private var intNowMonth:int = date.month + 1;
 		private var lstButtons:Array = new Array();
 		private var intSelectMonth:int = 2;
@@ -103,46 +106,49 @@
 		
 		private function initGameIcon() {
 			CAMEO::Debug {
-				intNowMonth = 12;
+				date = new Date(2015, 0);
+				strDate = String(date.fullYear) + String(date.month + 1);
+				intNowMonth = date.month + 1;
 			}
 			
 			for (var i=0; i<11; i++) {
-				var gameIconClass:Class;
-				try {
-					if (i+2 <= intNowMonth) {
-						gameIconClass = getDefinitionByName("Month" + String(i+2) + "Button") as Class;
-						var gameButton:SimpleButton = new gameIconClass();
-						gameButton.name = String(i+2);
-						if (i+2 < intNowMonth) {
-							gameButton.x = (i%3)*200 + 120;
-							gameButton.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
-							gameButton.addEventListener(MouseEvent.CLICK, onGameButtonClick);
-							this.addChild(gameButton);
-							lstButtons.push(gameButton);
-						}
-						if (i+2 == intNowMonth) {
-							var gameButtonMovieClip:MovieClip = new RandomRotateObject(gameButton);
-							gameButtonMovieClip.x = (i%3)*200 + 120;
-							gameButtonMovieClip.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
-							gameButtonMovieClip.scaleX = gameButtonMovieClip.scaleY = 1.2;
-							gameButtonMovieClip.addEventListener(MouseEvent.CLICK, onGameButtonClick);
-							this.addChild(gameButtonMovieClip);
-							lstButtons.push(gameButtonMovieClip);
-						}
-					}
-				} catch (e:Error) {
+				var dateBeginCheck:Date = new Date(2014, i+1, 1);
+				trace(date.month, dateBeginCheck.month);
+				if (dateBeginCheck >= date) {
 					var gameIcon:MovieClip = new CommingSoonIcon();
 					gameIcon.monthTextField.text = getChineseMonth(i+2);
 					gameIcon.x = (i%3)*200 + 120;
 					gameIcon.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
 					this.addChild(gameIcon);
+					continue;
 				}
-				if (i+2 > intNowMonth) {
-					var gameIcon:MovieClip = new CommingSoonIcon();
-					gameIcon.monthTextField.text = getChineseMonth(i+2);
-					gameIcon.x = (i%3)*200 + 120;
-					gameIcon.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
-					this.addChild(gameIcon);
+				var gameIconClass:Class = getDefinitionByName("Month" + String(i+2) + "Button") as Class;
+				var gameButton:SimpleButton = new gameIconClass();
+				gameButton.name = String(i+2);
+				if (date < dateVerify) {
+					if (date.month > dateBeginCheck.month) {
+						gameButton.x = (i%3)*200 + 120;
+						gameButton.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
+						gameButton.addEventListener(MouseEvent.CLICK, onGameButtonClick);
+						this.addChild(gameButton);
+						lstButtons.push(gameButton);
+					}
+					if (date.month == dateBeginCheck.month) {
+						var gameButtonMovieClip:MovieClip = new RandomRotateObject(gameButton);
+						gameButtonMovieClip.x = (i%3)*200 + 120;
+						gameButtonMovieClip.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
+						gameButtonMovieClip.scaleX = gameButtonMovieClip.scaleY = 1.2;
+						gameButtonMovieClip.addEventListener(MouseEvent.CLICK, onGameButtonClick);
+						this.addChild(gameButtonMovieClip);
+						lstButtons.push(gameButtonMovieClip);
+					}
+				}
+				if (date >= dateVerify) {
+					gameButton.x = (i%3)*200 + 120;
+					gameButton.y = Math.floor(i/3)*intIconYThreshold + intIconInitY;
+					gameButton.addEventListener(MouseEvent.CLICK, onGameButtonClick);
+					this.addChild(gameButton);
+					lstButtons.push(gameButton);
 				}
 			}
 		}
@@ -165,8 +171,7 @@
 		
 		private function onGameButtonClick(e:MouseEvent) {
 			intSelectMonth = int(e.target.name);
-			
-			if (intSelectMonth == intNowMonth) {
+			if (strDate == "2014" + e.target.name) {
 				eventChannel.writeEvent(new GameEvent(GameEvent.CLICK_GAME, intSelectMonth));
 			} else {
 				showNoGiftMessage();
@@ -174,7 +179,7 @@
 		}
 		
 		private function showNoGiftMessage() {
-			ToastMessage.showConfrim(this, String(intSelectMonth) + " 月贈獎活動已結束！", "玩遊戲", "取消");
+			ToastMessage.showConfrim(this, "當月份贈獎活動已結束！", "玩遊戲", "取消");
 			eventChannel.addEventListener(ToastMessage.CLICK_OK, onClickOk);
 		}
 		
@@ -246,6 +251,7 @@
 			var month8Game:Month8Game = null;
 			var month9Game:Month9Game = null;
 			var month10Game:Month10Game = null;
+			var month11Game:Month11Game = null;
 			var month12Game:Month12Game = null;
 		}
 	}

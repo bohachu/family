@@ -25,6 +25,8 @@
 		private var sharedObject:SharedObject = null;
 		
 		private var date:Date = new Date();
+		private var dateBeginVerify:Date = new Date(2014, 4, 1);
+		private var dateEndVerify:Date = new Date(2014, 5, 1);
 		
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
@@ -111,11 +113,6 @@
 		private function onGameFlowFinish(e:Event) {
 			trace("Month5Game.as / onGameFlowFinish.");
 			removeGameFlow();
-			var intMonth:int = date.month + 1;
-			
-			CAMEO::Debug {
-				intMonth = 5;
-			}
 			
 			sharedObject = SharedObject.getLocal("GameRecord");
 			CAMEO::NO_ANE {
@@ -123,19 +120,18 @@
 				sharedObject.flush();
 			}
 			
-			if (intMonth != 5) {
+			if (date < dateBeginVerify || date > dateEndVerify) {
 				eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
+				return;
 			}
 			
-			if (intMonth == 5) {
-				if (sharedObject.data.hasOwnProperty("isMonth5GameWinned")) {
-					eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
-				} else {
-					var jpgFile:File = File.applicationStorageDirectory.resolvePath(strJpgFileName);
-					var strJpgSavePath:String = jpgFile.nativePath;
-					lottery = new Lottery("Type2", true, strJpgSavePath);
-					this.addChild(lottery);
-				}
+			if (sharedObject.data.hasOwnProperty("isMonth5GameWinned")) {
+				eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
+			} else {
+				var jpgFile:File = File.applicationStorageDirectory.resolvePath(strJpgFileName);
+				var strJpgSavePath:String = jpgFile.nativePath;
+				lottery = new Lottery("Type2", true, strJpgSavePath);
+				this.addChild(lottery);
 			}
 		}
 		

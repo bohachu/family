@@ -22,6 +22,8 @@
 		private var sharedObject:SharedObject = null;
 		
 		private var date:Date = new Date();
+		private var dateBeginVerify:Date = new Date(2014, 1, 1);
+		private var dateEndVerify:Date = new Date(2014, 2, 1);
 		
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
@@ -98,7 +100,6 @@
 		private function onGameFlowFinish(e:Event) {
 			trace("Month2Game.as / onGameFlowFinish.");
 			removeGameFlow();
-			var intMonth:int = date.month + 1;
 			
 			sharedObject = SharedObject.getLocal("GameRecord");
 			CAMEO::NO_ANE {
@@ -106,17 +107,16 @@
 				sharedObject.flush();
 			}
 			
-			if (intMonth != 2) {
+			if (date < dateBeginVerify || date >= dateEndVerify) {
 				eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
+				return;
 			}
 			
-			if (intMonth == 2) {
-				if (sharedObject.data.hasOwnProperty("isMonth2GameWinned")) {
-					eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
-				} else {
-					lottery = new Lottery();
-					this.addChild(lottery);
-				}
+			if (sharedObject.data.hasOwnProperty("isMonth2GameWinned")) {
+				eventChannel.writeEvent(new Event(GameMakerEvent.EXPORT_MOVIE_FINISH));
+			} else {
+				lottery = new Lottery();
+				this.addChild(lottery);
 			}
 		}
 		
