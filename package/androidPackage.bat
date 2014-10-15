@@ -1,2 +1,2 @@
 copy /Y ..\Main.swf
-call "D:\Resource\AdobeAIRSDK 15 15.0.0.249\bin\adt" -package -target apk-captive-runtime -storetype pkcs12 -keystore ../../androidFlash.p12 -storepass 123456 Family-v1.9.1003.apk Main-app-android.xml -extdir "C:/github/flashCommon/ane/Android" Main.swf icons
+call "D:\Resource\AdobeAIRSDK 3.7\bin\adt" -package -target apk-captive-runtime -storetype pkcs12 -keystore ../../androidFlash.p12 -storepass 123456 Family-v1.9.1015.apk Main-app-android.xml -extdir "C:/github/flashCommon/ane/Android" Main.swf icons
