@@ -19,6 +19,7 @@
 	import tw.cameo.UploadFile;
 	import tw.cameo.DeviceUniqueID;
 	import tw.cameo.ToastMessage;
+	import tw.cameo.file.SaveJpg;
 	import flash.events.ErrorEvent;
 	
 	CAMEO::ANE {
@@ -194,6 +195,7 @@
 			jpgFile = File.applicationStorageDirectory.resolvePath(strJpeFileName);
 			strJpgSavePath = jpgFile.nativePath;
 			CAMEO::NO_ANE {
+				SaveJpg.save(jpgFile, bitmapToSave);
 				onJpgSaved();
 			}
 			CAMEO::ANE {

@@ -47,9 +47,4 @@
 </manifest>]]>
     </manifestAdditions>
   </android>
-  <extensions>
-    <extensionID>tw.cameo.imagehandler</extensionID>
-    <extensionID>com.cameo.flash2videoext</extensionID>
-    <extensionID>tw.cameo.lib.WebViewNativeExtension</extensionID>
-  </extensions>
 </application>
