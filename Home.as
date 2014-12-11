@@ -9,6 +9,10 @@
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
 	import tw.cameo.RandomRotateObjectModify;
+	import tw.cameo.GetVersionNumber;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
+	import flash.geom.Point;
 	
 	public class Home extends Sprite {
 		
@@ -56,6 +60,8 @@
 		private var intCenterIconY:int = 827;
 		private const intCenterIconYIphone5:int = 947;
 		private var centerIconRotateObject:RandomRotateObjectModify = null;
+
+		private var pointVersionNumber:Point = new Point(8, 78);
 		
 		public function Home() {
 			// constructor code
@@ -76,6 +82,7 @@
 			}
 			createBackground();
 			createButton();
+			addVersionNumber();
 		}
 		
 		private function destructor(e:Event) {
@@ -178,6 +185,22 @@
 			if (e.target is HomeButton_Game)     eventChannel.writeEvent(new Event(Home.CLICK_GAME)); 
 			if (e.target is HomeButton_News)     eventChannel.writeEvent(new Event(Home.CLICK_NEWS)); 
 			if (e.target is HomeButton_Center)   eventChannel.writeEvent(new Event(Home.CLICK_CENTER)); 
+		}
+		
+		private function addVersionNumber() {
+			var strVersionNumber:String = GetVersionNumber.getAppVersion();
+			var versionTextField:TextField = _createTextField("left", pointVersionNumber.x, pointVersionNumber.y);
+			versionTextField.text = "v " + strVersionNumber;
+		}
+		
+		private function _createTextField(align:String, x:Number, y:Number):TextField {
+			var tf:TextField = new TextField();
+			tf.defaultTextFormat = new TextFormat("Arial", 25, 0xFFFFFF, false, null, null, null, null, align);
+			tf.x = x;
+			tf.y = y;
+			tf.selectable = false;
+			this.addChild(tf);
+			return tf;
 		}
 	}
 	
